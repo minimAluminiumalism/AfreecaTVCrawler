@@ -76,9 +76,9 @@ def main():
 	for i in range(0, last_number):
 		ts_url = m3u8_url.replace('chunklist', 'media').replace('.m3u8', '_{}.ts'.format(i))
 		write_to_file(ts_url)
-		
+
 	subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
-	subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
+	# subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
 
 
 if __name__ == '__main__':
