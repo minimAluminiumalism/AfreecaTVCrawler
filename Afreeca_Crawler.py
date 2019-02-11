@@ -7,13 +7,11 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleW
 
 
 def get_onepage(url):
-
     response = requests.get(url, headers=headers).text
     return response
 
 
 def parse_onepage(html):
-
     pattern = re.compile('rowKey=(.*?)_r', re.S)
     items = re.findall(pattern, html)
     elements = items[0].split('_')
@@ -23,7 +21,6 @@ def parse_onepage(html):
 
 
 def get_playlist_m3u8_file(playlist_m3u8_url):
-
     response = requests.get(playlist_m3u8_url).content
     
     with open('playlist.m3u8', 'wb') as f:
@@ -32,7 +29,6 @@ def get_playlist_m3u8_file(playlist_m3u8_url):
         
 
 def get_direct_m3u8_file():
-
     print('enter number to select' + '\n' + '1.playlist.m3u8' + '\n' + '2.index.m3u8')
     filename = input('Number:')
     a = str(filename)
