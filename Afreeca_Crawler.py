@@ -75,6 +75,8 @@ def main():
             print(m3u8name[-1] + 'downloaded sucessfully!')
     
     subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
-    
+    subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
+
+
 if __name__ == '__main__':
     main()
