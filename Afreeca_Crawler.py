@@ -53,33 +53,41 @@ def get_direct_m3u8_file():
         return last_number
     
 
+def write_to_file(ts_url):
+    with open('download.txt', 'a') as f:
+        f.write(ts_url + '\n')
+    f.close()
+
 def main():
-    url = input('URL:')
-    html = get_onepage(url)
-    playlist_m3u8_url = parse_onepage(html)
-    get_playlist_m3u8_file(playlist_m3u8_url)
-    m3u8_url = get_direct_m3u8_file()
-    streamingTime = m3u8_url.split("/")[6]
-    merged_mp4_name = m3u8_url.split('/')[-1].replace('.m3u8', '')+'_'+streamingTime
-    print(merged_mp4_name)
+	url = input('URL:')
+	html = get_onepage(url)
+	playlist_m3u8_url = parse_onepage(html)
+	get_playlist_m3u8_file(playlist_m3u8_url)
+	m3u8_url = get_direct_m3u8_file()
+	streamingTime = m3u8_url.split("/")[6]
+	merged_mp4_name = m3u8_url.split('/')[-1].replace('.m3u8', '')+'_'+streamingTime
+	print(merged_mp4_name)
     
-    response = requests.get(m3u8_url).content
-    with open('index.m3u8', 'wb') as f:
-        f.write(response)
-        f.close
-    last_number = int(get_direct_m3u8_file()) + 1
-    for i in range(0, last_number):
-        ts_url = m3u8_url.replace('chunklist', 'media').replace('.m3u8', '_{}.ts'.format(i))
-        m3u8name = ts_url.split('/')
-        m3u8content = requests.get(ts_url).content
-        with open('{}'.format(m3u8name[-1]), 'wb') as f:
-            f.write(m3u8content)
-            f.close
-            print(m3u8name[-1]+' '+'downloaded sucessfully!')
-    
-    subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
-    subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
+	response = requests.get(m3u8_url).content
+	with open('index.m3u8', 'wb') as f:
+		f.write(response)
+		f.close
+	last_number = int(get_direct_m3u8_file()) + 1
+	for i in range(0, last_number):
+		ts_url = m3u8_url.replace('chunklist', 'media').replace('.m3u8', '_{}.ts'.format(i))
+		write_to_file(ts_url)
+	subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
+	subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
 
 
 if __name__ == '__main__':
     main()
+
+
+
+"""     m3u8name = ts_url.split('/')
+        m3u8content = requests.get(ts_url).content
+        with open('{}'.format(m3u8name[-1]), 'wb') as f:
+            f.write(m3u8content)
+            print(m3u8name[-1]+' '+'downloaded sucessfully!')
+        http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/vod/20190207/783/6F44D4A7_211208783_7.smil/media_b4000000_t64b3JpZ2luYWw=_0.tsf.close() """
