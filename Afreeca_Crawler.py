@@ -93,12 +93,12 @@ def main():
 	# concerning of the low and unstable bandwidth, choose 'wget' instead of requests.get to download for 5 times first. Then check all files' number and determine to repeat or not.
 	index = 1
 	if index < 3:
-		subprocess.Popen(['wget', '-c', '-i', 'download.txt'])
+		subprocess.call(['wget', '-c', '-i', 'download.txt'])
 		index = index + 1
 	
 	current_number = calculate_file_number()
 	while current_number <= practical_all_number:
-		subprocess.Popen(['wget', '-c', '-i', 'download.txt'])
+		subprocess.call(['wget', '-c', '-i', 'download.txt'])
 		current_number = calculate_file_number()
 	
 	# subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
