@@ -51,7 +51,7 @@ def get_direct_m3u8_file():
         f.close()
         last_number = result[-2][-6:-3]
         return last_number
-
+    
 
 def main():
     url = input('URL:')
@@ -59,7 +59,10 @@ def main():
     playlist_m3u8_url = parse_onepage(html)
     get_playlist_m3u8_file(playlist_m3u8_url)
     m3u8_url = get_direct_m3u8_file()
-    merged_mp4_name = m3u8_url.split('/')[-1]
+    streamingTime = m3u8_url.split("/")[6]
+    merged_mp4_name = m3u8_url.split('/')[-1].replace('.m3u8', '')+'_'+streamingTime
+    print(merged_mp4_name)
+    
     response = requests.get(m3u8_url).content
     with open('index.m3u8', 'wb') as f:
         f.write(response)
@@ -72,7 +75,7 @@ def main():
         with open('{}'.format(m3u8name[-1]), 'wb') as f:
             f.write(m3u8content)
             f.close
-            print(m3u8name[-1] + 'downloaded sucessfully!')
+            print(m3u8name[-1]+'\s'+'downloaded sucessfully!')
     
     subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
     subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
