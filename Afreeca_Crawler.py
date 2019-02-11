@@ -92,7 +92,7 @@ def main():
 
 	# concerning of the low and unstable bandwidth, choose 'wget' instead of requests.get to download for 5 times first. Then check all files' number and determine to repeat or not.
 	index = 1
-	if index < 5:
+	if index < 3:
 		subprocess.Popen(['wget', '-c', '-i', 'download.txt'])
 		index = index + 1
 	
