@@ -1,5 +1,7 @@
-import os
-DIR = input("input directory:")
+import subprocess
+
+subprocess.Popen(['wget', '-c', '-i', 'download.txt'])
 
 
-print(len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))]))
+http://bj.afreecatv.com/rlrlvkvk123/vods
+

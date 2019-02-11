@@ -1,9 +1,14 @@
 import requests
 import re
 import subprocess
-
+import os
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'}
+
+def calculate_file_number():
+	DIR = os.getcwd()
+	number = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+	return number
 
 
 def get_onepage(url):
@@ -58,6 +63,10 @@ def write_to_file(ts_url):
         f.write(ts_url + '\n')
     f.close()
 
+	
+
+
+
 def main():
 	url = input('URL:')
 	html = get_onepage(url)
@@ -77,6 +86,21 @@ def main():
 		ts_url = m3u8_url.replace('chunklist', 'media').replace('.m3u8', '_{}.ts'.format(i))
 		write_to_file(ts_url)
 
+	initial_number = calculate_file_number()
+	theory_all_number = initial_number + last_number
+	practical_all_number = theory_all_number - 100
+
+	# concerning of the low and unstable bandwidth, choose 'wget' instead of requests.get to download for 5 times first. Then check all files' number and determine to repeat or not.
+	index = 1
+	if index < 5:
+		subprocess.Popen('wget', '-c', '-i', 'download.txt'])
+		index = index + 1
+	
+	current_number = calculate_file_number()
+	while current_number <= practical_all_number:
+		subprocess.Popen(['wget', '-c', '-i', 'download.txt'])
+		current_number = calculate_file_number()
+	
 	# subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
 	# subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
 
