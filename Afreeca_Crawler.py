@@ -75,7 +75,7 @@ def main():
         with open('{}'.format(m3u8name[-1]), 'wb') as f:
             f.write(m3u8content)
             f.close
-            print(m3u8name[-1]+'\s'+'downloaded sucessfully!')
+            print(m3u8name[-1]+' '+'downloaded sucessfully!')
     
     subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
     subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
