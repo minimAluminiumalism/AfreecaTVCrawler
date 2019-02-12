@@ -55,6 +55,7 @@ def get_direct_m3u8_file():
             result.append(line)
         f.close()
         last_number = result[-2][-6:-3]
+        print(last_number)
         return last_number
     
 
