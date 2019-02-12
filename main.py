@@ -49,7 +49,7 @@ def GetIndexURL(PlaylistURL, index):
 		line = f.readline().strip('\n')
 		result.append(line)
 	f.close()
-	""" print(str(result[3])) """
+	print(str(result[3]))
 	m3u8_url = str(result[3])
 	return m3u8_url
 
@@ -83,28 +83,15 @@ def GetTSURL(m3u8_url, index):
 	return tsURLList, last_number
 
 
-def write_to_file(ts_url, index):
-	with open('download{}.txt'.format(index), 'a') as f:
-		f.write(ts_url + '\n')
-	f.close()
 
-
-def DownloadTSFile(index):
-	dir = os.getcwd()
-	allfilenames = os.listdir(dir)
-	filenames = []
-	for filename in allfilenames:
-		if 'download' in filename:
-			filenames.append(filename)
-	for filename in filenames:
-		subprocess.call(['wget', '-c', '-i', filename])
+def DownloadTSFile(downloadList, index):
+		for url in downloadList:
+			subprocess.call(['wget', '-c', url])
 		subprocess.call(['ffmpeg', '-i', 'index{}.m3u8'.format(index), '-c', 'copy', '{}.mp4'.format(filename)])
 		
 		for root, dirs, files in os.walk(os.getcwd()):
 			for name in files:
 				if name.endswith(".ts"):
-					os.remove(os.path.join(root, name))
-				if name.endswith(".txt"):
 					os.remove(os.path.join(root, name))
 				if name.endswith(".m3u8"):
 					os.remove(os.path.join(root, name))
@@ -128,13 +115,14 @@ def main():
 		DownloadIndexFile(m3u8_url, index)
 		tsURLList, last_number = GetTSURL(m3u8_url, index)
 
+		downloadList = []
 		for ts_url in tsURLList:
-			write_to_file(ts_url, index)
+			downloadList.append(ts_url)
 		
-		DownloadTSFile(index)
+		DownloadTSFile(downloadList, index)
 		index = index + 1
 		
-""" 		initial_number = calculate_file_number()
+		""" initial_number = calculate_file_number()
 		theory_all_number = initial_number + last_number
 		practical_all_number = theory_all_number - 50 """
 
