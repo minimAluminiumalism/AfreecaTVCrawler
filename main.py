@@ -104,7 +104,10 @@ def DownloadTSFile(index):
 			for name in files:
 				if name.endswith(".ts"):
 					os.remove(os.path.join(root, name))
-
+				if name.endswith(".txt"):
+					os.remove(os.path.join(root, name))
+				if name.endswith(".m3u8"):
+					os.remove(os.path.join(root, name))
 
 
 def calculate_file_number():
