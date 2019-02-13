@@ -1,4 +1,8 @@
 # AfreecaTVCrawler
-A Crawler of AfreecaTV
+
+*考虑到 AfreecaTV 的带宽质量堪忧，此脚本几乎不可避免会出现片段丢失情况，因此不推荐使用。*
+
+目前主要问题还是目标站点的服务器不断抛出 500 Internal Server Error 错误，这往往是 AfreecaTV 内部服务器错误而不是爬虫本身的问题，但是意味着大量 ts 文件会获取失败，用 wget 方法重复下载无法解决此问题。
+目前新的思路是通过传统的 requests.get(url).content 方法获取 ts 文件，在遇到错误后它会获取到一个 800K 左右的非正常文件，而正常的 ts 文件大小为 2M 左右，故通过比较文件大小可以确定是否需要反复下载失败的文件。
 
 

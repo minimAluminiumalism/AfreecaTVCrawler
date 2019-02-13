@@ -87,7 +87,7 @@ def GetTSURL(m3u8_url, index):
 def DownloadTSFile(downloadList, index):
 		for url in downloadList:
 			subprocess.call(['wget', '-c', url])
-		subprocess.call(['ffmpeg', '-i', 'index{}.m3u8'.format(index), '-c', 'copy', '{}.mp4'.format(filename)])
+		subprocess.call(['ffmpeg', '-i', 'index{}.m3u8'.format(index), '-c', 'copy', '{}.mp4'.format(index)])
 		
 		for root, dirs, files in os.walk(os.getcwd()):
 			for name in files:
