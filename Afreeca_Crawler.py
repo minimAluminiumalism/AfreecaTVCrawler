@@ -1,119 +1,73 @@
 import requests
 import re
 import subprocess
-import os
-
-headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'}
-
-def calculate_file_number():
-	DIR = os.getcwd()
-	number = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
-	return number
+from bs4 import BeautifulSoup
 
 
-def get_onepage(url):
-    response = requests.get(url, headers=headers).text
-    return response
-
-
-def parse_onepage(html):
-    pattern = re.compile('rowKey=(.*?)_r', re.S)
-    items = re.findall(pattern, html)
-    elements = items[0].split('_')
-    playlist_m3u8_url = 'http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/smil:vod/{}/{}/{}_{}_{}.smil/playlist.m3u8'.format(
-        elements[0], str(elements[2])[-3:], elements[1], elements[2], elements[3])
-    return playlist_m3u8_url
-
-
-def get_playlist_m3u8_file(playlist_m3u8_url):
-    response = requests.get(playlist_m3u8_url).content
+class AfreecaSpider(object):
+    def __init__(self):
+        self.base_url = "http://vod.afreecatv.com/PLAYER/STATION/40965797"
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+        }
+        self.video_info_url = "http://afbbs.afreecatv.com:8080/api/video/get_video_info.php?type=station&isAfreeca=true&autoPlay=true&showChat=true&expansion=true&{}&{}&{}&{}&{}&szPart=REVIEW&szVodType=STATION&szSysType=html5"
     
-    with open('playlist.m3u8', 'wb') as f:
-        f.write(response)
-        f.close
+    def get_video_info_url(self):
+        response = requests.get(self.base_url, headers=self.headers)
+        if response.status_code == 200:
+            html = response.text
+            soup = BeautifulSoup(html, "lxml")
+            video_info_url = soup.find("head").find("meta", {"name":"twitter:player"})["value"]
+            
+            patterns = re.compile("szBjId=(.*?)&.*?nStationNo=(.*?)&.*?nBbsNo=(.*?)&.*?nTitleNo=(.*?)&.*?szCategory=(.*?)&", re.S)
+            elem_dict = {}
+            elem_list = re.findall(patterns, video_info_url)
+            elem_dict["szBjId"] = elem_list[0][0]
+            elem_dict["nStationNo"] = elem_list[0][1]
+            elem_dict["nBbsNo"] = elem_list[0][2]
+            elem_dict["nTitleNo"] = elem_list[0][3]
+            elem_dict["szCategory"] = elem_list[0][4]
+
+            url_elem_list = []
+            for key, value in elem_dict.items():
+                url_elem_list.append("{}={}".format(key, value))
+            video_info_url = self.video_info_url.format(url_elem_list[0], url_elem_list[1], url_elem_list[2], url_elem_list[3], url_elem_list[4])
+            return video_info_url
         
-
-def get_direct_m3u8_file():
-    print('enter number to select' + '\n' + '1.playlist.m3u8' + '\n' + '2.index.m3u8')
-    filename = input('Number:')
-    a = str(filename)
-    if a == '1':
-        f = open('playlist.m3u8', 'r')
-        result = list()
-        for line in open('playlist.m3u8'):
-            line = f.readline().strip('\n')
-            result.append(line)
-        f.close()
-        print(str(result[3]))
-        m3u8_url = str(result[3])
-        return m3u8_url
-    else:
-        f = open('index.m3u8', 'r')
-        result = list()
-        for line in open('index.m3u8'):
-            line = f.readline().strip('\n')
-            result.append(line)
-        f.close()
-        last_number = result[-2][-6:-3]
-        print(last_number)
-        return last_number
-    
-
-def write_to_file(ts_url):
-    with open('download.txt', 'a') as f:
-        f.write(ts_url + '\n')
-    f.close()
-
-	
+        else:
+            print(response.status_code, "failed to get video info.")
+            return None
 
 
+    def get_all_playlist(self, video_info_url):
+        response = requests.get(video_info_url, headers=self.headers)
+        if response.status_code == 200:
+            html = response.text
+            soup = BeautifulSoup(html, "lxml")
+            items = soup.find("video", thumbnail="true").find_all("file")
+            
 
-def main():
-	url = input('URL:')
-	html = get_onepage(url)
-	playlist_m3u8_url = parse_onepage(html)
-	get_playlist_m3u8_file(playlist_m3u8_url)
-	m3u8_url = get_direct_m3u8_file()
-	streamingTime = m3u8_url.split("/")[6]
-	merged_mp4_name = m3u8_url.split('/')[-1].replace('.m3u8', '')+'_'+streamingTime
-	print(merged_mp4_name)
-    
-	response = requests.get(m3u8_url).content
-	with open('index.m3u8', 'wb') as f:
-		f.write(response)
-		f.close
-	last_number = int(get_direct_m3u8_file()) + 1
-	for i in range(0, last_number):
-		ts_url = m3u8_url.replace('chunklist', 'media').replace('.m3u8', '_{}.ts'.format(i))
-		write_to_file(ts_url)
+            m3u8_playlist_list = []
+            patterns = re.compile("http(.*?)m3u8", re.S)
+            for item in items:
+                url = re.findall(patterns, str(item))
+                m3u8_playlist_list.append("http{}m3u8".format(url[0]))
+            return m3u8_playlist_list
+                
+            
+        else:
+            print(response.status_code, "failed to get all playlist.")
 
-	initial_number = calculate_file_number()
-	theory_all_number = initial_number + last_number
-	practical_all_number = theory_all_number - 100
-
-	# concerning of the low and unstable bandwidth, choose 'wget' instead of requests.get to download for 5 times first. Then check all files' number and determine to repeat or not.
-	index = 1
-	if index < 3:
-		subprocess.call(['wget', '-c', '-i', 'download.txt'])
-		index = index + 1
-	
-	current_number = calculate_file_number()
-	while current_number <= practical_all_number:
-		subprocess.call(['wget', '-c', '-i', 'download.txt'])
-		current_number = calculate_file_number()
-	
-	# subprocess.call(['ffmpeg', '-protocol_whitelist', "concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto", '-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c','copy', '{}.mp4'.format(merged_mp4_name)])
-	# subprocess.call(['rm', 'playlist.m3u8', 'index.m3u8'])
+    def run(self):
+        video_info_url = self.get_video_info_url()
+        m3u8_playlist_list = self.get_all_playlist(video_info_url)
+        
+        index = 1
+        for m3u8_playlist in m3u8_playlist_list:
+            subprocess.call(["python3", "m3u8_downloader.py"])
+            index += 1
 
 
-if __name__ == '__main__':
-    main()
-
-
-
-"""     m3u8name = ts_url.split('/')
-        m3u8content = requests.get(ts_url).content
-        with open('{}'.format(m3u8name[-1]), 'wb') as f:
-            f.write(m3u8content)
-            print(m3u8name[-1]+' '+'downloaded sucessfully!')
-        http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/vod/20190207/783/6F44D4A7_211208783_7.smil/media_b4000000_t64b3JpZ2luYWw=_0.tsf.close() """
+if __name__ == "__main__":
+    AfreecaSpider().run()
+        

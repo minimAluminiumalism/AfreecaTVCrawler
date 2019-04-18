@@ -1,0 +1,8 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=4000000,NAME="original"
+http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/vod/20190128/976/A7A4C308_210924976_3.smil/chunklist_b4000000_t64b3JpZ2luYWw=.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1000000,NAME="hd"
+http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/vod/20190128/976/A7A4C308_210924976_3.smil/chunklist_b1000000_t64aGQ=.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=2000000,NAME="hd2k"
+http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/vod/20190128/976/A7A4C308_210924976_3.smil/chunklist_b2000000_t64aGQyaw==.m3u8

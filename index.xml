@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Contents>
+  <track>
+    <bj_id>dasl8121</bj_id>
+    <nickname><![CDATA[♥이슬이]]></nickname>
+    <copyright_id>dasl8121</copyright_id>
+    <flag>SUCCEED</flag>
+    <read_cnt>1790</read_cnt>
+    <logo>//stimg.afreecatv.com/LOGO/da/dasl8121/dasl8121.jpg</logo>
+    <title><![CDATA[[생]신입여캠 처음뵙겠습니다 ♥]]></title>
+    <duration>7516</duration>
+    <reg_date>2019-01-19 20:56:36</reg_date>
+    <titleImage>http://videoimg.afreecatv.com/php/SnapshotLoad.php?rowKey=20190119_2A1BF225_210598699_2_r</titleImage>
+    <video type="realmedia" playCount="1" category="00210000">http://pa.afreecatv.com/RealMedia/ads/adstream_sx.ads/pc.web.in/vod/station@x41?aftvbjid=dasl8121&amp;aftvcatid=00210000&amp;aftvlid=&amp;aftvorigin=dasl8121&amp;aftvcontid=40676660&amp;dlang=&amp;t=0&amp;ve=r</video>
+    <video chat="" thumbnail="true">
+      <log>http://afbbs.afreecatv.com:8080/api/video/set_video_log.php</log>
+      <file duration="3600" key="20190119_68A495D4_210598699_1">http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/smil:vod/20190119/699/68A495D4_210598699_1.smil/playlist.m3u8<levels_label><info><level>0</level><label>일반화질(540p)</label><name>hd</name><resolution>960x540</resolution><bitrate>1000000</bitrate></info><info><level>1</level><label>고화질(720p)</label><name>hd2k</name><resolution>1280x720</resolution><bitrate>2000000</bitrate></info><info><level>2</level><label>원본화질</label><name>original</name><resolution>1280x720</resolution><bitrate>4000000</bitrate></info></levels_label></file>
+      <file duration="3601" key="20190119_2A1BF225_210598699_2">http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/smil:vod/20190119/699/2A1BF225_210598699_2.smil/playlist.m3u8<levels_label><info><level>0</level><label>일반화질(540p)</label><name>hd</name><resolution>960x540</resolution><bitrate>1000000</bitrate></info><info><level>1</level><label>고화질(720p)</label><name>hd2k</name><resolution>1280x720</resolution><bitrate>2000000</bitrate></info><info><level>2</level><label>원본화질</label><name>original</name><resolution>1280x720</resolution><bitrate>4000000</bitrate></info></levels_label></file>
+      <file duration="315" key="20190119_707497A9_210598699_3">http://videofile-hls-ko-record-cf.afreecatv.com/video/_definst_/smil:vod/20190119/699/707497A9_210598699_3.smil/playlist.m3u8<levels_label><info><level>0</level><label>일반화질(540p)</label><name>hd</name><resolution>960x540</resolution><bitrate>1000000</bitrate></info><info><level>1</level><label>고화질(720p)</label><name>hd2k</name><resolution>1280x720</resolution><bitrate>2000000</bitrate></info><info><level>2</level><label>원본화질</label><name>original</name><resolution>1280x720</resolution><bitrate>4000000</bitrate></info></levels_label></file>
+    </video>
+    <chat_url>http://videoimg.afreecatv.com/php/ChatLoad.php?rowKey={0}_c</chat_url>
+    <thumb_url>http://videoimg.afreecatv.com/php/SnapshotLoad.php?rowKey=</thumb_url>
+    <ucc_type>30</ucc_type>
+    <water_mark>0</water_mark>
+    <subscription_personalcon>
+      <month>0</month>
+    </subscription_personalcon>
+    <file_type>REVIEW</file_type>
+    <region_type>0</region_type>
+  </track>
+  <share>
+    <link>http://v.afree.ca/ST/40676660</link>
+    <iframe><![CDATA[<iframe width="0" height="0" src="http://vod.afreecatv.com/embed.php?&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40676660" frameborder="0" allowfullscreen="true"></iframe>]]></iframe>
+  </share>
+  <watchtime>
+    <useable></useable>
+  </watchtime>
+  <ppv>
+    <isPPV></isPPV>
+    <PPVNote>0</PPVNote>
+  </ppv>
+  <editangle>2</editangle>
+</Contents>
