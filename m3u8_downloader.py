@@ -16,7 +16,7 @@ import json
 
 
 class M3U8Downloader:
-    def __init__(self, config, pool_size, retry = 0):
+    def __init__(self, config, pool_size, retry = 1):
         self._config = config
         self.set_pool(pool_size, retry)
 

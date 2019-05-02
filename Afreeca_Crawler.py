@@ -98,7 +98,7 @@ class AfreecaSpider(object):
         config_dict["output_dir"] = "download"
         config_dict["uri"] = m3u8_playlist
         config_content = json.dumps(config_dict)
-        with open("config.json", "wb") as f:
+        with open("config.json", "w") as f:
             f.write(config_content)
             f.close()
         with open("config.json", "r+") as f:
