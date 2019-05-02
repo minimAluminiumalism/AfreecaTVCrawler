@@ -139,6 +139,11 @@ class AfreecaSpider(object):
             self.download_m3u8(m3u8_playlist)
             self.construct_config(m3u8_playlist, index, video_name)
             subprocess.call(["python3", "m3u8_downloader.py"])
+            
+            if os.path.exists("playlist.m3u8"):
+                os.remove("playlist.m3u8")
+            else:
+                pass
             self.move_files()
             subprocess.call(
 			[
@@ -149,10 +154,15 @@ class AfreecaSpider(object):
 			]
             )
             subprocess.call(['rm', '-r', 'index.m3u8'])
-            try:
+
+            if os.path.exists("playlist.m3u8"):
+                os.remove("playlist.m3u8")
+            else:
+                pass
+            """ try:
                 subprocess.call(['rm', '-r', 'playlist.m3u8'])
             except:
-                pass
+                pass """
             self.del_files(path)
             index += 1
 
