@@ -148,6 +148,10 @@ class AfreecaSpider(object):
 			]
             )
             subprocess.call(['rm', '-r', 'index.m3u8'])
+            try:
+                subprocess.call(['rm', '-r', 'playlist.m3u8'])
+            except:
+                pass
             self.del_files(path)
             index += 1
 
