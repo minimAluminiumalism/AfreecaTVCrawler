@@ -1,6 +1,9 @@
 import requests
 import re
 import subprocess
+import json
+import shutil
+import os
 from bs4 import BeautifulSoup
 
 
@@ -52,19 +55,81 @@ class AfreecaSpider(object):
             for item in items:
                 url = re.findall(patterns, str(item))
                 m3u8_playlist_list.append("http{}m3u8".format(url[0]))
+            print(m3u8_playlist_list)
             return m3u8_playlist_list
                 
             
         else:
             print(response.status_code, "failed to get all playlist.")
 
+    def get_video_name(self):
+        response = requests.get(self.base_url, headers=self.headers)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "lxml")
+            name = soup.find("dt", id="title_name").text
+
+            return name 
+        else:
+            print(response.status_code, " failed to get video name")
+
+
+    def construct_config(self, m3u8_playlist, index, video_name):
+        config_dict = {}
+        config_dict["concat"] = True
+        config_dict["output_file"] = "{}{}.mp4".format(video_name, index)
+        config_dict["output_dir"] = "download"
+        config_dict["uri"] = m3u8_playlist
+        config_content = json.dumps(config_dict)
+        with open("config.json", "w") as f:
+            f.write(config_content)
+            f.close()
+        with open("config.json", "r+") as f:
+            data = json.load(f)
+            data["ignore_small_file_size"] = 0
+            f.seek(0)
+            json.dump(data, f)
+            f.truncate()
+
+
+    def move_files(self):
+        current_path = os.getcwd()
+        des_path = current_path + "/download"
+        if os.path.isdir(des_path):
+            os.remove(des_path+"/index.m3u8")
+            for item in os.listdir(des_path):
+                shutil.move(des_path+"/{}".format(item), current_path)
+            os.rmdir("download")
+
+
+    def del_files(self, path):
+        for root, dirs, files in os.walk(path):
+            for name in files:
+                if name.endswith(".ts"):
+                    os.remove(os.path.join(root, name))
+    
+    
     def run(self):
         video_info_url = self.get_video_info_url()
         m3u8_playlist_list = self.get_all_playlist(video_info_url)
-        
+        video_name = self.get_video_name()
+
+        path = os.getcwd()
+  
         index = 1
         for m3u8_playlist in m3u8_playlist_list:
+            self.construct_config(m3u8_playlist, index, video_name)
             subprocess.call(["python3", "m3u8_downloader.py"])
+            self.move_files()
+            subprocess.call(
+			[
+				'ffmpeg', '-protocol_whitelist',
+				"concat,file,subfile,http,https,tls,rtp,tcp,udp,crypto",
+				'-allowed_extensions', 'ALL', '-i', 'index.m3u8', '-c', 'copy',
+				'{}{}.mp4'.format(video_name, index)
+			]
+            )
+            subprocess.call(['rm', '-r', 'index.m3u8'])
+            self.del_files(path)
             index += 1
 
 
