@@ -73,6 +73,12 @@ class AfreecaSpider(object):
             print(response.status_code, " failed to get video name")
 
 
+    def download_m3u8(self, m3u8_playlist):
+        response = requests.get(m3u8_playlist, headers=self.headers).content
+        with open("index.m3u8", "w") as f:
+            f.write(response)
+            f.close()
+
     def construct_config(self, m3u8_playlist, index, video_name):
         config_dict = {}
         config_dict["concat"] = True
@@ -95,7 +101,7 @@ class AfreecaSpider(object):
         current_path = os.getcwd()
         des_path = current_path + "/download"
         if os.path.isdir(des_path):
-            os.remove(des_path+"/index.m3u8")
+            #os.remove(des_path+"/index.m3u8")
             for item in os.listdir(des_path):
                 shutil.move(des_path+"/{}".format(item), current_path)
             os.rmdir("download")
@@ -117,6 +123,7 @@ class AfreecaSpider(object):
   
         index = 1
         for m3u8_playlist in m3u8_playlist_list:
+            self.download_m3u8(m3u8_playlist)
             self.construct_config(m3u8_playlist, index, video_name)
             subprocess.call(["python3", "m3u8_downloader.py"])
             self.move_files()
