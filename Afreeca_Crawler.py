@@ -9,7 +9,8 @@ from bs4 import BeautifulSoup
 
 class AfreecaSpider(object):
     def __init__(self):
-        self.base_url = "http://vod.afreecatv.com/PLAYER/STATION/40965797"
+        URL = input("stream url: ")
+        self.base_url = str(URL)
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
         }
