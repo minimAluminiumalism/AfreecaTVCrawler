@@ -55,7 +55,7 @@ class AfreecaSpider(object):
             for item in items:
                 url = re.findall(patterns, str(item))
                 m3u8_playlist_list.append("http{}m3u8".format(url[0]))
-            print(m3u8_playlist_list)
+            #print(m3u8_playlist_list)
             return m3u8_playlist_list
                 
             
@@ -74,9 +74,21 @@ class AfreecaSpider(object):
 
 
     def download_m3u8(self, m3u8_playlist):
-        response = requests.get(m3u8_playlist, headers=self.headers).content
-        with open("index.m3u8", "w") as f:
-            f.write(response)
+        response = requests.get(m3u8_playlist, headers=self.headers)
+        with open("multiple_index.m3u8", "wb") as f:
+            f.write(response.content)
+            f.close()
+        
+        f = open("multiple_index.m3u8", "r")
+        datas = []
+        for line in open("multiple_index.m3u8"):
+            line = f.readline().strip("\n")
+            datas.append(line)
+        
+        
+        response = requests.get(datas[-1], headers=self.headers)
+        with open("index.m3u8", "wb") as f:
+            f.write(response.content)
             f.close()
 
     def construct_config(self, m3u8_playlist, index, video_name):
