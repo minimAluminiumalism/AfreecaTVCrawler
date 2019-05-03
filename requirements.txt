@@ -1,0 +1,4 @@
+bs4
+m3u8
+requests
+gevent
