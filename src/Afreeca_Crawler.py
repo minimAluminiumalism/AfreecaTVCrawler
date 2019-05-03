@@ -92,8 +92,7 @@ class AfreecaSpider(object):
             f.write(response.content)
             f.close()
 
-    def construct_config(self, m3u8_playlist, index, video_name):
-        pool_size = input("pool size: ")
+    def construct_config(self, m3u8_playlist, index, video_name, pool_size):
         config_dict = {}
         config_dict["concat"] = True
         config_dict["output_file"] = "{}{}.mp4".format(video_name, index)
@@ -135,11 +134,12 @@ class AfreecaSpider(object):
         video_name = self.get_video_name()
 
         path = os.getcwd()
-  
+        
+        pool_size = input("pool size: ")
         index = 1
         for m3u8_playlist in m3u8_playlist_list:
             self.download_m3u8(m3u8_playlist)
-            self.construct_config(m3u8_playlist, index, video_name)
+            self.construct_config(m3u8_playlist, index, video_name, pool_size)
             subprocess.call(["python3", "m3u8_downloader.py"])
             
             if os.path.exists("playlist.m3u8"):

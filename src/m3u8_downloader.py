@@ -168,7 +168,7 @@ if __name__ == '__main__':
         datefmt='%Y-%m-%d %H:%M:%S')
     config_file = open('config.json', 'r')
     config = json.load(config_file)
-    pool_size = config.get("pool size")
+    pool_size = config.get("pool size", 20)
     #process_number = input("Process Number: ")
     x = M3U8Downloader(config, pool_size)
     x.run()
