@@ -1,5 +1,6 @@
 import requests
 import re
+import m3u8
 import subprocess
 import json
 import shutil
@@ -74,30 +75,27 @@ class AfreecaSpider(object):
             print(response.status_code, " failed to get video name")
 
 
-    def download_m3u8(self, m3u8_playlist):
-        response = requests.get(m3u8_playlist, headers=self.headers)
-        with open("multiple_index.m3u8", "wb") as f:
-            f.write(response.content)
-            f.close()
-        
-        f = open("multiple_index.m3u8", "r")
-        datas = []
-        for line in open("multiple_index.m3u8"):
-            line = f.readline().strip("\n")
-            datas.append(line)
-        
-        
-        response = requests.get(datas[-1], headers=self.headers)
-        with open("index.m3u8", "wb") as f:
-            f.write(response.content)
-            f.close()
+    def resolution_confirmation(self, m3u8_playlist):
+        m3u8_obj = m3u8.load(m3u8_playlist)
+        variant_info_dict = {}
+        bandwidth_list = []
+        if m3u8_obj.is_variant:
+            for playlist in m3u8_obj.playlists:
+                variant_info_dict[playlist.stream_info.bandwidth] = playlist.uri
+                bandwidth_list.append(playlist.stream_info.bandwidth)
 
-    def construct_config(self, m3u8_playlist, index, video_name, pool_size):
+        final_bandwidth = max(bandwidth_list)
+        true_m3u8_playlist = variant_info_dict[final_bandwidth]
+        print(true_m3u8_playlist)
+        return true_m3u8_playlist
+
+
+    def construct_config(self, true_m3u8_playlist, index, video_name, pool_size):
         config_dict = {}
         config_dict["concat"] = True
         config_dict["output_file"] = "{}{}.mp4".format(video_name, index)
         config_dict["output_dir"] = "download"
-        config_dict["uri"] = m3u8_playlist
+        config_dict["uri"] = true_m3u8_playlist
         config_content = json.dumps(config_dict)
         with open("config.json", "w") as f:
             f.write(config_content)
@@ -138,8 +136,8 @@ class AfreecaSpider(object):
         pool_size = input("pool size: ")
         index = 1
         for m3u8_playlist in m3u8_playlist_list:
-            self.download_m3u8(m3u8_playlist)
-            self.construct_config(m3u8_playlist, index, video_name, pool_size)
+            true_m3u8_playlist = self.resolution_confirmation(m3u8_playlist)
+            self.construct_config(true_m3u8_playlist, index, video_name, pool_size)
             subprocess.call(["python3", "m3u8_downloader.py"])
             
             if os.path.exists("playlist.m3u8"):

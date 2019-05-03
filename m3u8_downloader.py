@@ -163,12 +163,12 @@ class M3U8Downloader:
         return filename
 
 if __name__ == '__main__':
-    pool_size = input("pool size: ")
     logging.basicConfig(level=logging.INFO, 
         format='%(asctime)s %(levelname)-8s %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S')
     config_file = open('config.json', 'r')
     config = json.load(config_file)
+    pool_size = config.get("pool size", 20)
     #process_number = input("Process Number: ")
-    x = M3U8Downloader(config, int(pool_size))
+    x = M3U8Downloader(config, pool_size)
     x.run()
