@@ -86,7 +86,12 @@ class AfreecaSpider(object):
 
         final_bandwidth = max(bandwidth_list)
         true_m3u8_playlist = variant_info_dict[final_bandwidth]
-        print(true_m3u8_playlist)
+        #print(true_m3u8_playlist)
+        response = requests.get(true_m3u8_playlist, headers=self.headers)
+        with open("index.m3u8", "wb") as f:
+            f.write(response.content)
+            f.close()
+
         return true_m3u8_playlist
 
 
@@ -123,6 +128,8 @@ class AfreecaSpider(object):
         for root, dirs, files in os.walk(path):
             for name in files:
                 if name.endswith(".ts"):
+                    os.remove(os.path.join(root, name))
+                if name.endswith(".m3u8"):
                     os.remove(os.path.join(root, name))
     
     
