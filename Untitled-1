@@ -1,0 +1,15 @@
+http://vod.afreecatv.com/embed.php?isAfreeca=false&autoPlay=true&showChat=true&szBjId=dasl8121&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40965797&szCategory=00210000&szPart=REVIEW&type=station&szSysType=html5
+http://afbbs.afreecatv.com:8080/api/video/get_video_info.php?type=station&isAfreeca=true&autoPlay=true&showChat=true&expansion=true&szBjId=dasl8121&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40965797&szCategory=00210000&szPart=REVIEW&szVodType=STATION&szSysType=html5&_=1555602610843
+http://afbbs.afreecatv.com:8080/api/video/get_video_info.php?type=station&isAfreeca=true&autoPlay=true&showChat=true&expansion=true&szBjId=dasl8121&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40676660&szCategory=00210000&szPart=REVIEW&szVodType=STATION&szSysType=html5
+
+autoPlay=true&showChat=true&szBjId=dasl8121&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40965797&szCategory=00210000&szPart=REVIEW&type=station&szSysType=html5
+&szBjId=dasl8121&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40965797&szCategory=00210000
+
+szBjId=dasl8121
+nStationNo=6644501
+nBbsNo=11211992
+nTitleNo=40965797
+
+
+
+http://afbbs.afreecatv.com:8080/api/video/get_video_info.php?&nStationNo=6644501&nBbsNo=11211992&nTitleNo=40965797
