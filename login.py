@@ -7,8 +7,8 @@ login_url = "https://login.afreecatv.com/app/LoginAction.php"
 form_data = {
     "szWork": "login",
     "szType": "json",
-    "szUid": "buxianghuole",
-    "szPassword": "7QEMC2ZwXs4fB2p",
+    "szUid": input("username: "),
+    "szPassword": input("password: "),
     "isSaveId": "true",
     "szScriptVar": "oLoginRet",
     "szAction": ""
