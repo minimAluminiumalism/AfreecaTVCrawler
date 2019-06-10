@@ -13,10 +13,28 @@ class AfreecaSpider(object):
         URL = input("stream url: ")
         self.base_url = str(URL)
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36",
+            "Origin": "http://vod.afreecatv.com",
+
         }
         self.video_info_url = "http://afbbs.afreecatv.com:8080/api/video/get_video_info.php?type=station&isAfreeca=true&autoPlay=true&showChat=true&expansion=true&{}&{}&{}&{}&{}&szPart=REVIEW&szVodType=STATION&szSysType=html5"
-    
+        self.login_url = "https://login.afreecatv.com/app/LoginAction.php"
+        self.session = requests.Session()
+
+    def login_in(self):
+        form_data = {
+            "szWork": "login",
+            "szType": "json",
+            "szUid": input("username: "),
+            "szPassword": input("password: "),
+            "isSaveId": "true",
+            "szScriptVar": "oLoginRet",
+            "szAction": ""
+        }
+        login_in = self.session.post(self.login_url, data=form_data)
+
+
+
     def get_video_info_url(self):
         response = requests.get(self.base_url, headers=self.headers)
         if response.status_code == 200:
@@ -45,11 +63,12 @@ class AfreecaSpider(object):
 
 
     def get_all_playlist(self, video_info_url):
-        response = requests.get(video_info_url, headers=self.headers)
+        response = self.session.get(video_info_url, headers=self.headers)
         if response.status_code == 200:
             html = response.text
             soup = BeautifulSoup(html, "lxml")
             items = soup.find("video", thumbnail="true").find_all("file")
+            #items = soup.find("video", {"duration": True})
             
 
             m3u8_playlist_list = []
@@ -65,11 +84,11 @@ class AfreecaSpider(object):
             print(response.status_code, "failed to get all playlist.")
 
     def get_video_name(self):
-        response = requests.get(self.base_url, headers=self.headers)
+        response = self.session.get(self.base_url, headers=self.headers)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "lxml")
-            name = soup.find("dt", id="title_name").text
-
+            name = soup.find("title").text
+            print("Video Name: ", name)
             return name 
         else:
             print(response.status_code, " failed to get video name")
@@ -135,7 +154,9 @@ class AfreecaSpider(object):
     
     def run(self):
         video_info_url = self.get_video_info_url()
+        self.login_in()
         m3u8_playlist_list = self.get_all_playlist(video_info_url)
+        print("Downloading All {} segments.".format(len(m3u8_playlist_list)))
         video_name = self.get_video_name()
 
         path = os.getcwd()
