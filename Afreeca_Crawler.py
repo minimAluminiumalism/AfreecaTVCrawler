@@ -126,6 +126,8 @@ class AfreecaSpider(object):
             for name in files:
                 if name.endswith(".ts"):
                     os.remove(os.path.join(root, name))
+                if name.endswith(".m3u8"):
+                    os.remove(os.path.join(root, name))
     
     
     def run(self):
@@ -136,6 +138,8 @@ class AfreecaSpider(object):
         path = os.getcwd()
   
         index = 1
+        #print(m3u8_playlist_list)
+        #os._exit(0)
         for m3u8_playlist in m3u8_playlist_list:
             stream_m3u8_url = self.download_m3u8(m3u8_playlist)
             self.construct_config(stream_m3u8_url, index, video_name)
@@ -154,16 +158,6 @@ class AfreecaSpider(object):
 				'{}{}.mp4'.format(video_name, index)
 			]
             )
-            subprocess.call(['rm', '-r', 'index.m3u8'])
-
-            if os.path.exists("playlist.m3u8"):
-                os.remove("playlist.m3u8")
-            else:
-                pass
-            """ try:
-                subprocess.call(['rm', '-r', 'playlist.m3u8'])
-            except:
-                pass """
             self.del_files(path)
             index += 1
 
