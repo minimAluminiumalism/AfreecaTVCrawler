@@ -67,7 +67,7 @@ class AfreecaSpider(object):
         response = requests.get(self.base_url, headers=self.headers)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "lxml")
-            name = soup.find("dt", id="title_name").text
+            name = soup.find("h1", id="broadTitle").text
 
             return name 
         else:
@@ -86,18 +86,19 @@ class AfreecaSpider(object):
             line = f.readline().strip("\n")
             datas.append(line)
         
-        
+        stream_m3u8_url = datas[-1]
         response = requests.get(datas[-1], headers=self.headers)
         with open("index.m3u8", "wb") as f:
             f.write(response.content)
             f.close()
+        return stream_m3u8_url
 
-    def construct_config(self, m3u8_playlist, index, video_name):
+    def construct_config(self, stream_m3u8_url, index, video_name):
         config_dict = {}
         config_dict["concat"] = True
         config_dict["output_file"] = "{}{}.mp4".format(video_name, index)
         config_dict["output_dir"] = "download"
-        config_dict["uri"] = m3u8_playlist
+        config_dict["uri"] = stream_m3u8_url
         config_content = json.dumps(config_dict)
         with open("config.json", "w") as f:
             f.write(config_content)
@@ -136,8 +137,8 @@ class AfreecaSpider(object):
   
         index = 1
         for m3u8_playlist in m3u8_playlist_list:
-            self.download_m3u8(m3u8_playlist)
-            self.construct_config(m3u8_playlist, index, video_name)
+            stream_m3u8_url = self.download_m3u8(m3u8_playlist)
+            self.construct_config(stream_m3u8_url, index, video_name)
             subprocess.call(["python3", "m3u8_downloader.py"])
             
             if os.path.exists("playlist.m3u8"):
