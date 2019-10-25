@@ -48,14 +48,19 @@ class AfreecaSpider(object):
         if response.status_code == 200:
             html = response.text
             soup = BeautifulSoup(html, "lxml")
-            items = soup.find("video", thumbnail="true").find_all("file")
-            
-
             m3u8_playlist_list = []
-            patterns = re.compile("http(.*?)m3u8", re.S)
-            for item in items:
-                url = re.findall(patterns, str(item))
-                m3u8_playlist_list.append("http{}m3u8".format(url[0]))
+            if soup.find("video", thumbnail="true") == None:
+                items = soup.find("video", {"duration": True})
+                patterns = re.compile("(.*?).m3u8")
+                m3u8_playlist_url = re.findall(patterns, str(items.text))[0] + ".m3u8"
+                m3u8_playlist_list.append(m3u8_playlist_url)
+                
+            else:
+                items = soup.find("video", thumbnail="true").find_all("file")
+                patterns = re.compile("http(.*?)m3u8", re.S)
+                for item in items:
+                    url = re.findall(patterns, str(item))
+                    m3u8_playlist_list.append("http{}m3u8".format(url[0]))
             #print(m3u8_playlist_list)
             return m3u8_playlist_list
                 
